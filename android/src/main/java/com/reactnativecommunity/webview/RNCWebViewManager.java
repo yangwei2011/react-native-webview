@@ -756,13 +756,36 @@ public class RNCWebViewManager extends SimpleViewManager<WebView> {
 
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
-      activeUrl = url;
-      dispatchEvent(
-        view,
-        new TopShouldStartLoadWithRequestEvent(
-          view.getId(),
-          createWebViewEvent(view, url)));
-      return true;
+//       activeUrl = url;
+//       dispatchEvent(
+//         view,
+//         new TopShouldStartLoadWithRequestEvent(
+//           view.getId(),
+//           createWebViewEvent(view, url)));
+//       return true;
+      
+      ReactContext reactContext = (ReactContext) view.getContext();
+      String referer = "https://en.huojianmao.com";
+
+
+      if (url.startsWith("weixin://")) {
+        try {
+          Intent intent = new Intent();
+          intent.setAction(Intent.ACTION_VIEW);
+          intent.setData(Uri.parse(url));
+          reactContext.startActivity(intent);
+        } catch (Exception e) {
+//          Toast.makeText(reactContext, "未安装微信应用", Toast.LENGTH_SHORT).show();
+        }
+        return true;
+      } else {
+        Map<String, String> extraHeaders = new HashMap<>();
+        extraHeaders.put("Referer", referer);
+        if (!TextUtils.isEmpty(url) && url.startsWith("http")) {
+          view.loadUrl(url, extraHeaders);
+        }
+        return true;
+      }
     }
 
 
