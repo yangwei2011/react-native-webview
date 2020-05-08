@@ -732,30 +732,6 @@ public class RNCWebViewManager extends SimpleViewManager<WebView> {
     @Override
     public void onPageFinished(WebView webView, String url) {
       super.onPageFinished(webView, url);
-      
-      Log.d("截取订单号开始1", "截取订单号urlLast==----");
-      String orderNum = "";
-      //截取订单号
-      if (!TextUtils.isEmpty(url) && url.contains("redirect_url")) {
-        String urlSplit[] = url.split("//");
-        String urlLast = urlSplit[urlSplit.length - 1];
-        Log.d("截取订单号开始", "截取订单号urlLast==----" + urlLast);
-        if (!TextUtils.isEmpty(urlLast) && urlLast.length() > 0) {
-          orderNum = urlLast;
-          //成功之后传给RN
-          WritableMap params = Arguments.createMap();
-          params.putString("orderNum", orderNum);
-          ReactContext reactContext = (ReactContext) webView.getContext();
-
-          reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("wechatpay", urlLast);
-//          isFirst = false;
-        }
-      } else {
-        Log.d("截取订单号失败", "截取订单号失败");
-      }
-
-      
-
       if (!mLastLoadFailed) {
         RNCWebView reactWebView = (RNCWebView) webView;
 
